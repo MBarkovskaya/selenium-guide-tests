@@ -19,15 +19,15 @@ public class MyFirstTest {
   @Before
   public void start() {
     driver = new ChromeDriver();
-    wait = new WebDriverWait(driver, 10);
+    wait = new WebDriverWait(driver, 20);
   }
 
   @Test
   public void myFirstTest() {
-    driver.navigate().to("http://www.google.com");
+    driver.navigate().to("http://www.bing.com/");
     driver.findElement(By.name("q")).sendKeys("webdriver");
-    driver.findElement(By.name("btnG")).click();
-    wait.until(titleIs("webdriver - Поиск в Google"));
+    driver.findElement(By.name("go")).click();
+    wait.until(titleIs("webdriver - Bing"));
   }
 
   @After
