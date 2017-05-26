@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -18,7 +19,7 @@ public class MyFirstTest {
 
   @Before
   public void start() {
-    driver = new ChromeDriver();
+    driver = new FirefoxDriver();
     wait = new WebDriverWait(driver, 20);
   }
 
