@@ -11,14 +11,12 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.remote.BrowserType.*;
 
@@ -27,12 +25,13 @@ public class ApplicationManager {
   private WebDriver driver;
 
   private SeleniumHelper seleniumHelper;
+  private NavigatorHelper navigatorHelper;
 
   public ApplicationManager() {
     properties = new Properties();
   }
 
-  public void driverChoice(String browser) throws IOException {
+  public WebDriver driverChoice(String browser) throws IOException {
     String target = System.getProperty("target", "local");
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
     if ("".equals(properties.getProperty("selenium.server"))) {
@@ -63,16 +62,23 @@ public class ApplicationManager {
       capabilities.setPlatform(Platform.fromString(System.getProperty("platform", "win8")));
       driver = new RemoteWebDriver(new URL(properties.getProperty("selenium.server")), capabilities);
     }
+    return driver;
   }
+
 
   public void init() {
     driver.get(properties.getProperty("web.baseUrl"));
     seleniumHelper = new SeleniumHelper(driver);
-    seleniumHelper.loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
+    navigatorHelper = new NavigatorHelper(seleniumHelper);
+    navigatorHelper.loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
   }
 
   public SeleniumHelper selenium() {
     return seleniumHelper;
+  }
+
+  public NavigatorHelper navigationTo() {
+    return navigatorHelper;
   }
 
   public void stop() {

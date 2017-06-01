@@ -1,7 +1,9 @@
 package my_stqa.training.selenium.appmanager;
 
 import org.junit.Assert;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SeleniumHelper {
@@ -10,12 +12,6 @@ public class SeleniumHelper {
 
   public SeleniumHelper(WebDriver driver) {
     this.driver = driver;
-  }
-
-  public void loginAdmin(String username, String password) {
-    type(By.name("username"), username);
-    type(By.name("password"), password);
-    click(By.name("login"));
   }
 
   protected void type(By locator, String text) {
@@ -41,19 +37,20 @@ public class SeleniumHelper {
     element.click();
   }
 
-  public void AppearancePage() {
-    click(By.xpath("//ul[@id='box-apps-menu']//li[@id='app-']/a[span='Appearence']"));
+  protected void click(By locator, long timeout) {
+    WebDriverWait wait = new WebDriverWait(driver, timeout);
+
+    try {
+      WebElement element = wait.until((WebDriver d) -> d.findElement(locator));
+      Assert.assertNotNull(element);
+      element.click();
+    } catch (Exception e) {
+      Assert.fail("Unable to locate element");
+    }
   }
 
-  public void HomePage() {
-    driver.navigate().to("http://localhost/litecart/admin/");
+  protected void navigateTo(String url) {
+    driver.navigate().to(url);
   }
 
-  public void TemplatePage() {
-    click(By.xpath(".//li[@id='doc-template']/a[span='Template']"));
-  }
-
-  public void LogotypePage() {
-    click(By.xpath(".//li[@id='doc-logotype']/a[span='Logotype']"));
-  }
 }
