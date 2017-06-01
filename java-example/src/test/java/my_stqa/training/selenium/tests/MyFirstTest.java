@@ -1,13 +1,12 @@
-package my_stqa.training.selenium;
+package my_stqa.training.selenium.tests;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
@@ -19,7 +18,8 @@ public class MyFirstTest {
 
   @Before
   public void start() {
-    driver = new FirefoxDriver();
+    FirefoxOptions options = new FirefoxOptions().setLegacy(true);
+    driver = new FirefoxDriver(options);
     wait = new WebDriverWait(driver, 20);
   }
 

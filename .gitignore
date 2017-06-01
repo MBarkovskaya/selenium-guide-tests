@@ -12,3 +12,13 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+*.class
+*.jar
+*.html
+*.js
+*.css
+java-example/build/test-results/test/binary/output.bin.idx
+*.bin
+java-example/build/tmp/jar/MANIFEST.MF
+java-example/build/test-results/test/TEST-my_stqa.training.selenium.tests.MyFirstTest.xml
+.idea/workspace.xml
