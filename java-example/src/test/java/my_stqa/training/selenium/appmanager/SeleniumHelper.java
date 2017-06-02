@@ -2,9 +2,11 @@ package my_stqa.training.selenium.appmanager;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 public class SeleniumHelper {
 
@@ -53,4 +55,20 @@ public class SeleniumHelper {
     driver.navigate().to(url);
   }
 
+  public boolean isElementPresent(By locator) {
+    //если элемент есть, то он найдется, если нет - будет выброшено исключение
+    //так как Selenium не может знать есть элемент на странице или нет, поэтому нужно обернуть попытку поиска элементов в блок try
+    try {
+      //      явное ожидание
+      WebDriverWait wait = new WebDriverWait(driver, 10);
+      wait.until(presenceOfElementLocated(locator));
+      //      неявное ожидание
+      //      driver.findElement(locator);
+      return true;
+    } catch (TimeoutException ex) {
+      return false;
+      //    } catch (NoSuchElementException ex) {
+      //      return false;
+    }
+  }
 }

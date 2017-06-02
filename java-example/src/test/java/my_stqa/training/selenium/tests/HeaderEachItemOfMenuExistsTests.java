@@ -2,49 +2,42 @@ package my_stqa.training.selenium.tests;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 
 public class HeaderEachItemOfMenuExistsTests extends TestBase {
 
   @Test
-  public void appearanceItemTest() throws InterruptedException {
-    app.navigationTo().HomePage();
-    app.navigationTo().AppearancePage();
-    app.navigationTo().TemplatePage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Template')]")));
-    app.navigationTo().LogotypePage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Logotype')]")));
+  public void HeaderItemExists() throws InterruptedException {
+    int j = 0;
+    while (j <= 16) {
+      app.navigationTo().HomePage();
+      List<WebElement> elements = driver.findElements(By.cssSelector("li#app-"));
+      elements.get(j).click();
+      assertTrue(app.selenium().isElementPresent(By.xpath(".//h1")));
+      if (driver.findElements(By.cssSelector("li#app- > ul.docs")).size() > 0) {
+        //получаем список элементов по локатору для вложенных списков
+        List<WebElement> items = driver.findElements(By.cssSelector("li#app- ul.docs"));
+        //определяем количество элементов в списке
+        int num = driver.findElements(By.xpath(".//ul[@class='docs']/li")).size();
+        int i = 0;
+        while (i < num) {
+          //получаем список после рефреша заново для каждой итерации
+          List<WebElement> newItems = driver.findElements(By.xpath(".//ul[@class='docs']/li"));
+          //
+//          String[] split = newItems.get(i).getText().split("\n");
+//          String multiline = split[0];
+          newItems.get(i).click();
+          driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+          assertTrue(app.selenium().isElementPresent(By.xpath(".//h1")));
+          i++;
+        }
+      }
+      j++;
+    }
   }
-
-  @Test
-  public void catalogItemTest() throws InterruptedException {
-    app.navigationTo().HomePage();
-    app.navigationTo().CatalogPage();
-    app.navigationTo().CatalogItemPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Catalog')]")));
-    app.navigationTo().ProductGroupsPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Product Groups')]")));
-    app.navigationTo().CSVPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'CSV Import/Export')]")));
-  }
-
-  @Test
-  public void countriesItemTest() throws InterruptedException {
-    app.navigationTo().CountriesPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Countries')]")));
-  }
-
-  @Test
-  public void customersItemTest() throws InterruptedException {
-    app.navigationTo().CustomersPage();
-    app.navigationTo().CustomersItemPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Customers')]")));
-    app.navigationTo().CSVCustomersPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'CSV Import/Export')]")));
-    app.navigationTo().NewsletterPage();
-    assertTrue(isElementPresent(By.xpath(".//h1[contains(.,'Newsletter')]")));
-  }
-
-  
 }

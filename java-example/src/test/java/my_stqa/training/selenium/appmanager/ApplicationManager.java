@@ -9,6 +9,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -31,17 +32,18 @@ public class ApplicationManager {
     properties = new Properties();
   }
 
-  public WebDriver driverChoice(String browser) throws IOException {
+  public WebDriver driverChoice() throws IOException {
+    String browser = System.getProperty("browser", BrowserType.FIREFOX);
     String target = System.getProperty("target", "local");
     properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
     if ("".equals(properties.getProperty("selenium.server"))) {
       if (browser.equals(FIREFOX)) {
-        FirefoxOptions options =
-                new FirefoxOptions().setBinary(new FirefoxBinary(new File("c:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe")))
-                        .setProfile(new FirefoxProfile()).setLegacy(false);
-        driver = new FirefoxDriver(options);
-        //    FirefoxOptions options = new FirefoxOptions().setLegacy(true);
-        //    driver = new FirefoxDriver(options);
+//        FirefoxOptions options =
+//                new FirefoxOptions().setBinary(new FirefoxBinary(new File("c:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe")))
+//                        .setProfile(new FirefoxProfile()).setLegacy(false);
+//        driver = new FirefoxDriver(options);
+            FirefoxOptions options = new FirefoxOptions().setLegacy(true);
+            driver = new FirefoxDriver(options);
 
         //    FirefoxOptions options = new FirefoxOptions().setBinary(new FirefoxBinary(new File("c:\\Program Files\\Nightly\\firefox.exe"))).setProfile(new FirefoxProfile());
         //    driver = new FirefoxDriver(options);

@@ -27,19 +27,16 @@ public class TestBase {
 
   @Before
   public void setUp() throws IOException {
-
     if (tlDriver.get() != null) {
       driver = tlDriver.get();
     }  else {
       //передаем браузер, в котором будем запускать тесты
-      driver = app.driverChoice(System.getProperty("browser", BrowserType.FIREFOX));
+      driver = app.driverChoice();
       //эта строчка кода включает настройку НЕЯВНОЕ ОЖИДАНИЕ
-//      driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+//      driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
       tlDriver.set(driver);
     }
-
-    wait = new WebDriverWait(driver, 8);
-
+    wait = new WebDriverWait(driver, 15);
     app.init();
   }
 
@@ -49,20 +46,6 @@ public class TestBase {
   }
 
 
-  public boolean isElementPresent(By locator) {
-    //если элемент есть, то он найдется, если нет - будет выброшено исключение
-    //так как Selenium не может знать есть элемент на странице или нет, поэтому нужно обернуть попытку поиска элементов в блок try
-    try {
-//      явное ожидание
-            wait.until((WebDriver d) -> d.findElement(locator));
-//            неявное ожидание
-//      driver.findElement(locator);
-      return true;
-          } catch (TimeoutException ex) {
-            return false;
-//    } catch (NoSuchElementException ex) {
-//      return false;
-    }
-  }
+
 
 }
