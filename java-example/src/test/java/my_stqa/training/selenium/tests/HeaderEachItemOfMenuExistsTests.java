@@ -14,7 +14,8 @@ public class HeaderEachItemOfMenuExistsTests extends TestBase {
   @Test
   public void HeaderItemExists() throws InterruptedException {
     int j = 0;
-    while (j <= 16) {
+    int numBut = driver.findElements(By.cssSelector("li#app-")).size();
+    while (j < numBut) {
       app.navigationTo().HomePage();
       List<WebElement> elements = driver.findElements(By.cssSelector("li#app-"));
       elements.get(j).click();
