@@ -4,10 +4,8 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -26,7 +24,7 @@ public class ApplicationManager {
   private WebDriver driver;
 
   private SeleniumHelper seleniumHelper;
-  private NavigatorHelper navigatorHelper;
+  private NavigationHelper navigationHelper;
 
   public ApplicationManager() {
     properties = new Properties();
@@ -71,16 +69,16 @@ public class ApplicationManager {
   public void init() {
     driver.get(properties.getProperty("web.baseUrl"));
     seleniumHelper = new SeleniumHelper(driver);
-    navigatorHelper = new NavigatorHelper(seleniumHelper);
-    navigatorHelper.loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
+    navigationHelper = new NavigationHelper(seleniumHelper);
+    navigationHelper.loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
   }
 
   public SeleniumHelper selenium() {
     return seleniumHelper;
   }
 
-  public NavigatorHelper navigationTo() {
-    return navigatorHelper;
+  public NavigationHelper navigationTo() {
+    return navigationHelper;
   }
 
   public void stop() {

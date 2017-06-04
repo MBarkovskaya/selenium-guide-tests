@@ -15,7 +15,7 @@ public class StickerExistsTests extends TestBase {
     List<WebElement> elementList = driver.findElements(By.cssSelector("div.middle li.product.column.shadow.hover-light"));
     for (WebElement element : elementList) {
       String sticker = element.getText().split("\n")[0];
-      MatcherAssert.assertThat("Sticker like this exists", sticker.equals("NEW") ^ sticker.equals("SALE"));
+      MatcherAssert.assertThat("The only one sticker have to exist", sticker.equals("NEW") ^ sticker.equals("SALE"));
     }
   }
 

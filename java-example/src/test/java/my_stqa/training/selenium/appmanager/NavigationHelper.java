@@ -3,10 +3,10 @@ package my_stqa.training.selenium.appmanager;
 
 import org.openqa.selenium.By;
 
-public class NavigatorHelper {
+public class NavigationHelper {
   private final SeleniumHelper selenium;
 
-  public NavigatorHelper(SeleniumHelper selenium) {
+  public NavigationHelper(SeleniumHelper selenium) {
     this.selenium = selenium;
   }
 
