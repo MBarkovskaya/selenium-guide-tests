@@ -16,7 +16,7 @@ public class HeaderEachItemOfMenuExistsTests extends TestBase {
     int j = 0;
     int numBut = driver.findElements(By.cssSelector("li#app-")).size();
     while (j < numBut) {
-      app.navigationTo().HomePage();
+      app.goTo().HomePage();
       List<WebElement> elements = driver.findElements(By.cssSelector("li#app-"));
       elements.get(j).click();
       assertTrue(app.selenium().isElementPresent(By.xpath(".//h1")));

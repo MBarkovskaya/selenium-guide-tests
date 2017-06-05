@@ -11,7 +11,7 @@ public class StickerExistsTests extends TestBase {
 
   @Test
   public void stickerTest() {
-    app.navigationTo().Home();
+    app.goTo().Home();
     List<WebElement> elementList = driver.findElements(By.cssSelector("div.middle li.product.column.shadow.hover-light"));
     for (WebElement element : elementList) {
       String sticker = element.getText().split("\n")[0];
@@ -20,4 +20,5 @@ public class StickerExistsTests extends TestBase {
   }
 
 }
+
 

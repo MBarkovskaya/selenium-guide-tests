@@ -77,7 +77,7 @@ public class ApplicationManager {
     return seleniumHelper;
   }
 
-  public NavigationHelper navigationTo() {
+  public NavigationHelper goTo() {
     return navigationHelper;
   }
 
