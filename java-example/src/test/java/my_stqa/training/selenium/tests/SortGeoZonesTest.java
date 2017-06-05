@@ -31,11 +31,5 @@ public class SortGeoZonesTest extends TestBase {
     }
   }
 
-  public void assertAlphabetOrder(List<String> listNames) {
-    for (int i = 0; i < listNames.size() - 1; i++) {
-      String previous = listNames.get(i);
-      String next = listNames.get(i + 1);
-      Assert.assertTrue(previous.compareTo(next) < 0);
-    }
-  }
+
 }

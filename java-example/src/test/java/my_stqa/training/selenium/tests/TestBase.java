@@ -2,6 +2,7 @@ package my_stqa.training.selenium.tests;
 
 import my_stqa.training.selenium.appmanager.ApplicationManager;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -11,6 +12,7 @@ import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TestBase {
@@ -45,7 +47,12 @@ public class TestBase {
     app.stop();
   }
 
-
-
+  public void assertAlphabetOrder(List<String> listNames) {
+    for (int i = 0; i < listNames.size() - 1; i++) {
+      String previous = listNames.get(i);
+      String next = listNames.get(i + 1);
+      Assert.assertTrue(previous.compareTo(next) < 0);
+    }
+  }
 
 }

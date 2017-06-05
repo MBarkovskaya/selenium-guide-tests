@@ -45,4 +45,8 @@ public class NavigationHelper {
   public void GeoZonesItemPage(int id) {
     selenium.navigateTo(String.format("http://localhost/litecart/admin/?app=geo_zones&doc=edit_geo_zone&page=1&geo_zone_id=%s", id));
   }
+
+  public void DetailsPage() {
+    selenium.click(By.cssSelector("div#box-campaigns a.link"), 5);
+  }
 }
