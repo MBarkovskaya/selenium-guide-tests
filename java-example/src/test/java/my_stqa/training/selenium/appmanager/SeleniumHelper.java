@@ -71,4 +71,13 @@ public class SeleniumHelper {
       //      return false;
     }
   }
+
+  public void verifyFontWeight(String fontWeight) {
+    try {
+      int mpRegularStyle = Integer.parseInt(fontWeight);
+      Assert.assertTrue(mpRegularStyle >= 700 && mpRegularStyle <= 900);
+    } catch (NumberFormatException e) {
+      Assert.assertEquals("bold", fontWeight);
+    }
+  }
 }

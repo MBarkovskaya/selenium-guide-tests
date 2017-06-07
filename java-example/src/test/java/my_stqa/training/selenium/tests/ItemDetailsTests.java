@@ -4,78 +4,143 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
+
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class ItemDetailsTests extends TestBase{
+public class ItemDetailsTests extends TestBase {
+  //создаем переменную типа Pattern, компилируем рег. выражение
+  private Pattern rgba = Pattern.compile("rgba\\((\\d{1,3}), (\\d{1,3}), (\\d{1,3}),.*");
 
   @Test
   public void itemName() {
-    app.goTo().Home();
+    init();
+    goTo().Home();
     String mainPageData = driver.findElement(By.cssSelector("div#box-campaigns div.name")).getText();
-    app.goTo().DetailsPage();
-    String detailsPageData = driver.findElement(By.cssSelector("div.content h1.title")).getText();
-    MatcherAssert.assertThat(mainPageData, equalTo(detailsPageData));
+    goTo().DetailsPage();
+    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    try {
+      driver.findElement(By.cssSelector("div.content h1.title")).getText();
+    } catch (TimeoutException ignore) {
+    }
+    MatcherAssert.assertThat(mainPageData, equalTo(driver.findElement(By.cssSelector("div.content h1.title")).getText()));
   }
 
   @Test
   public void itemPrices() {
-    app.goTo().Home();
+    init();
+    goTo().Home();
     String mainPageRegular = driver.findElement(By.cssSelector("div#box-campaigns s.regular-price")).getText();
     String mainPageCampaigh = driver.findElement(By.cssSelector("div#box-campaigns strong.campaign-price")).getText();
-    app.goTo().DetailsPage();
+    goTo().DetailsPage();
     String detailsPageRegular = driver.findElement(By.cssSelector("div.content s.regular-price")).getText();
-    String detailsPageCampaigh = driver.findElement(By.cssSelector("div.content strong.campaign-price")).getText();
+    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    try {
+      driver.findElement(By.cssSelector("div.content strong.campaign-price")).getText();
+    } catch (TimeoutException ignore) {
+    }
     MatcherAssert.assertThat(mainPageRegular, equalTo(detailsPageRegular));
-    MatcherAssert.assertThat(mainPageCampaigh, equalTo(detailsPageCampaigh));
+    MatcherAssert.assertThat(mainPageCampaigh, equalTo(driver.findElement(By.cssSelector("div.content strong.campaign-price")).getText()));
   }
 
   @Test
   public void itemGreyPrices() {
+    init();
     //проверки на главной странице
-    app.goTo().Home();
+    goTo().Home();
     String mpRegularColor = driver.findElement(By.cssSelector("div#box-campaigns s.regular-price")).getCssValue("color");
-    String firstnum = (mpRegularColor.substring(5,8));
-    String secondtnum = (mpRegularColor.substring(10,13));
-    String thirdtnum = (mpRegularColor.substring(15,18));
-    Assert.assertTrue(firstnum.equals(secondtnum) && secondtnum.equals(thirdtnum));
+    RGB rgb = extractRGB(mpRegularColor);
+    Assert.assertTrue(rgb.R == rgb.G && rgb.G == rgb.B);
 
-    String mpRegularStyle = driver.findElement(By.cssSelector("div#box-campaigns s.regular-price")).getCssValue("text-decoration");
+    String mpRegularStyle =
+            driver.findElement(By.cssSelector("div#box-campaigns s.regular-price")).getCssValue("text-decoration").substring(0, 12);
     MatcherAssert.assertThat(mpRegularStyle, equalTo("line-through"));
     //проверки на странице детализации
-    app.goTo().DetailsPage();
+    goTo().DetailsPage();
     String dpRegularColor = driver.findElement(By.cssSelector("div.content s.regular-price")).getCssValue("color");
-    String fnum = (mpRegularColor.substring(5,8));
-    String snum = (mpRegularColor.substring(10,13));
-    String thnum = (mpRegularColor.substring(15,18));
-    Assert.assertTrue(fnum.equals(snum) && snum.equals(thnum));
-
-    String dpRegularStyle = driver.findElement(By.cssSelector("div.content s.regular-price")).getCssValue("text-decoration");
-    MatcherAssert.assertThat(dpRegularStyle, equalTo("line-through"));
+    RGB rgb1 = extractRGB(dpRegularColor);
+    Assert.assertTrue(rgb1.R == rgb1.G && rgb1.G == rgb1.B);
+    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    try {
+      driver.findElement(By.cssSelector("div.content s.regular-price")).getCssValue("text-decoration").substring(0, 12);
+    } catch (TimeoutException ignore) {
+    }
+    MatcherAssert.assertThat(driver.findElement(By.cssSelector("div.content s.regular-price")).getCssValue("text-decoration").substring(0, 12),
+            equalTo("line-through"));
   }
 
   @Test
   public void itemRedPrices() {
+    init();
     //проверки на главной странице
-    app.goTo().Home();
+    goTo().Home();
     String mpCampaignColor = driver.findElement(By.cssSelector("div#box-campaigns strong.campaign-price")).getCssValue("color");
-    String firstnum = (mpCampaignColor.substring(5,8));
-    String secondnum = (mpCampaignColor.substring(10,11));
-    String thirdnum = (mpCampaignColor.substring(13,14));
-    Assert.assertTrue(secondnum.equals(thirdnum) && secondnum.equals("0"));
+    RGB rgb = extractRGB(mpCampaignColor);
+    Assert.assertTrue(rgb.G == rgb.B && rgb.G == 0);
 
-    String mpRegularStyle = driver.findElement(By.cssSelector("div#box-campaigns strong.campaign-price")).getCssValue("font-weight");
-    MatcherAssert.assertThat(mpRegularStyle, equalTo("bold"));
+    selenium().verifyFontWeight(driver.findElement(By.cssSelector("div#box-campaigns strong.campaign-price")).getCssValue("font-weight"));
     //проверки на странице детализации
-    app.goTo().DetailsPage();
+    goTo().DetailsPage();
+    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     String dpCampaignColor = driver.findElement(By.cssSelector("div.content strong.campaign-price")).getCssValue("color");
-    String fnum = (dpCampaignColor.substring(5,8));
-    String snum = (dpCampaignColor.substring(10,11));
-    String thnum = (dpCampaignColor.substring(13,14));
-    Assert.assertTrue(snum.equals(thnum) && snum.equals("0"));
+    RGB rgb1 = extractRGB(dpCampaignColor);
+    Assert.assertTrue(rgb1.G == rgb1.B && rgb1.G == 0);
+    driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+    selenium().verifyFontWeight(driver.findElement(By.cssSelector("div.content strong.campaign-price")).getCssValue("font-weight"));
+  }
 
-    String dpRegularStyle = driver.findElement(By.cssSelector("div.content strong.campaign-price")).getCssValue("font-weight");
-    MatcherAssert.assertThat(dpRegularStyle, equalTo("bold"));
+  @Test
+  public void itemSize() {
+    init();
+    goTo().Home();
+    int mpRegularH = driver.findElement(By.cssSelector("div#box-campaigns s.regular-price")).getSize().getHeight();
+    int mpRegularW = driver.findElement(By.cssSelector("div#box-campaigns s.regular-price")).getSize().getWidth();
+
+    int mpCampaighH = driver.findElement(By.cssSelector("div#box-campaigns strong.campaign-price")).getSize().getHeight();
+    int mpCampaighW = driver.findElement(By.cssSelector("div#box-campaigns strong.campaign-price")).getSize().getWidth();
+    Assert.assertTrue(mpRegularH < mpCampaighH && mpRegularW < mpCampaighW);
+
+    goTo().DetailsPage();
+    int dpRegularH = driver.findElement(By.cssSelector("div.content s.regular-price")).getSize().getHeight();
+    driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+    try{
+    driver.findElement(By.cssSelector("div.content s.regular-price")).getSize().getWidth();
+  } catch (TimeoutException ignore) {
+  }
+    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    int dpCampaighH = driver.findElement(By.cssSelector("div.content strong.campaign-price")).getSize().getHeight();
+    int dpCampaighW = driver.findElement(By.cssSelector("div.content strong.campaign-price")).getSize().getWidth();
+    Assert.assertTrue(dpRegularH < dpCampaighH
+            && driver.findElement(By.cssSelector("div.content s.regular-price")).getSize().getWidth() < dpCampaighW);
+  }
+
+
+  //метод достает значение RGB из строки заданного шаблона (скомпилированная строка), используя рег. выражение
+  private RGB extractRGB(String rgbStr) {
+    //matcher ищет соответствие между скомпилированным шаблоном и заданной строкой
+    Matcher matcher = rgba.matcher(rgbStr);
+    RGB result = null;
+    // проверяем соответствует ли строка шаблону рег. выражения
+    if (matcher.matches()) {
+      result = new RGB();
+      //в группах хранится результат распарсивания строки
+      result.R = Integer.valueOf(matcher.group(1));
+      result.G = Integer.valueOf(matcher.group(2));
+      result.B = Integer.valueOf(matcher.group(3));
+    }
+
+    return result;
+  }
+
+  //создаем внутренний класс для хранения значений RGB
+  private class RGB {
+    int R;
+    int G;
+    int B;
   }
 }
 

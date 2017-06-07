@@ -11,6 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="java-example_main" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-java:3.4.0" level="project" />
+    <orderEntry type="library" name="Gradle: ru.stqa.selenium:webdriver-factory:4.0" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-api:3.4.0" level="project" />
     <orderEntry type="library" name="Gradle: org.seleniumhq.selenium:selenium-chrome-driver:3.4.0" level="project" />

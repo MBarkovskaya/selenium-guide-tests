@@ -1,6 +1,5 @@
 package my_stqa.training.selenium.tests;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -12,7 +11,11 @@ public class SortCountriesTest extends TestBase {
 
   @Test
   public void sortCountries() {
-    app.goTo().CountriesPage();
+    init();
+    goTo().HomePage();
+    goTo().loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
+
+    goTo().CountriesPage();
     List<String> cNames = new ArrayList<>();
     List<String> cCodes = new ArrayList<>();
     List<WebElement> listElements = driver.findElements(By.cssSelector("[name=countries_form] tr.row"));
@@ -24,15 +27,15 @@ public class SortCountriesTest extends TestBase {
     }
     assertAlphabetOrder(cNames);
     for (int j = 0; j < cCodes.size() - 1; j++) {
-      app.goTo().CountriesItemPage(cCodes.get(j));
+      goTo().CountriesItemPage(cCodes.get(j));
       List<WebElement> rows = driver.findElements(By.cssSelector("table.dataTable tr:not(.header)"));
-      int numZone = rows.size()-1;
+      int numZone = rows.size() - 1;
       if (numZone > 2) {
         List<String> czones = new ArrayList<>();
         for (WebElement row : rows) {
           WebElement cell = row.findElement(By.xpath("./td[3]"));
           String czone = cell.getAttribute("textContent");
-          if(!czone.equals("")) {
+          if (!czone.equals("")) {
             czones.add(czone);
           }
         }

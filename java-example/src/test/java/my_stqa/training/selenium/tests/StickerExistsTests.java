@@ -1,9 +1,12 @@
 package my_stqa.training.selenium.tests;
 
 import org.hamcrest.MatcherAssert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import ru.stqa.selenium.factory.WebDriverPool;
 
 import java.util.List;
 
@@ -11,12 +14,13 @@ public class StickerExistsTests extends TestBase {
 
   @Test
   public void stickerTest() {
-    app.goTo().Home();
+    init();
+    goTo().Home();
     List<WebElement> elementList = driver.findElements(By.cssSelector("div.middle li.product.column.shadow.hover-light"));
     for (WebElement element : elementList) {
-      String sticker = element.getText().split("\n")[0];
-      MatcherAssert.assertThat("The only one sticker have to exist", sticker.equals("NEW") ^ sticker.equals("SALE"));
-    }
+      int num = element.findElements(By.xpath(".//div[@class='image-wrapper']/div[starts-with(@class,'sticker')]")).size();
+      Assert.assertTrue(num == 1);
+    }           
   }
 
 }
