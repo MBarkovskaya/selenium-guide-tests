@@ -1,4 +1,4 @@
-package my_stqa.training.selenium.appmanager;
+//package my_stqa.training.selenium.appmanager;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;

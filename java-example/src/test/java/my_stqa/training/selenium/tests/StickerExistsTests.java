@@ -15,7 +15,7 @@ public class StickerExistsTests extends TestBase {
   @Test
   public void stickerTest() {
     init();
-    goTo().Home();
+    driver.get(getProperty("web.baseUrl") + "/en/");
     List<WebElement> elementList = driver.findElements(By.cssSelector("div.middle li.product.column.shadow.hover-light"));
     for (WebElement element : elementList) {
       int num = element.findElements(By.xpath(".//div[@class='image-wrapper']/div[starts-with(@class,'sticker')]")).size();

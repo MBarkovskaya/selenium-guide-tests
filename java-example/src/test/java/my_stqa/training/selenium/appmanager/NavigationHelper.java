@@ -50,3 +50,4 @@ public class NavigationHelper {
     selenium.click(By.cssSelector("div#box-campaigns a.link"), 5);
   }
 }
+

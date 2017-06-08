@@ -12,7 +12,7 @@ public class SortCountriesTest extends TestBase {
   @Test
   public void sortCountries() {
     init();
-    goTo().HomePage();
+    driver.get(getProperty("web.baseUrl") + "/admin/");
     goTo().loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
 
     goTo().CountriesPage();

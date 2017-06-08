@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -22,11 +23,8 @@ public class ItemDetailsTests extends TestBase {
     goTo().Home();
     String mainPageData = driver.findElement(By.cssSelector("div#box-campaigns div.name")).getText();
     goTo().DetailsPage();
-    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-    try {
-      driver.findElement(By.cssSelector("div.content h1.title")).getText();
-    } catch (TimeoutException ignore) {
-    }
+    WebElement element = selenium().findElement(By.cssSelector("div.content h1.title"), 15);
+    Assert.assertNotNull("Can't find div.content h1.title", element);
     MatcherAssert.assertThat(mainPageData, equalTo(driver.findElement(By.cssSelector("div.content h1.title")).getText()));
   }
 
@@ -106,9 +104,9 @@ public class ItemDetailsTests extends TestBase {
 
     goTo().DetailsPage();
     int dpRegularH = driver.findElement(By.cssSelector("div.content s.regular-price")).getSize().getHeight();
-    driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     try{
-    driver.findElement(By.cssSelector("div.content s.regular-price")).getSize().getWidth();
+    int dpRegularW = driver.findElement(By.cssSelector("div.content s.regular-price")).getSize().getWidth();
   } catch (TimeoutException ignore) {
   }
     driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

@@ -1,5 +1,6 @@
 package my_stqa.training.selenium.tests;
 
+import my_stqa.training.selenium.appmanager.DataHelper;
 import my_stqa.training.selenium.appmanager.NavigationHelper;
 import my_stqa.training.selenium.appmanager.SeleniumHelper;
 import org.junit.AfterClass;
@@ -9,7 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import ru.stqa.selenium.factory.WebDriverPool;
@@ -30,6 +30,7 @@ public class TestBase {
   protected final Properties properties;
   private SeleniumHelper seleniumHelper;
   private NavigationHelper navigationHelper;
+  private DataHelper dataHelper;
 
   public TestBase() {
     properties = new Properties();
@@ -41,7 +42,7 @@ public class TestBase {
   }
 
   public void init() {
-    String browser = System.getProperty("browser", BrowserType.IE);
+    String browser = System.getProperty("browser", BrowserType.CHROME);
     String target = System.getProperty("target", "local");
     try {
       properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
@@ -68,8 +69,7 @@ public class TestBase {
           driver = WebDriverPool.DEFAULT.getDriver(chromeCapabilities);
           break;
         case IE:
-          InternetExplorerOptions ieOptions = new InternetExplorerOptions();
-          DesiredCapabilities capabilities = new DesiredCapabilities(ieOptions.merge(DesiredCapabilities.internetExplorer()));
+          DesiredCapabilities capabilities = new DesiredCapabilities(DesiredCapabilities.internetExplorer());
           capabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
           driver = WebDriverPool.DEFAULT.getDriver(capabilities);
           break;
@@ -87,7 +87,12 @@ public class TestBase {
 
     seleniumHelper = new SeleniumHelper(driver);
     navigationHelper = new NavigationHelper(seleniumHelper);
+    dataHelper = new DataHelper(driver);
 
+  }
+
+  public String getProperty(String key) {
+    return properties.getProperty(key);
   }
 
   public SeleniumHelper selenium() {
@@ -96,6 +101,10 @@ public class TestBase {
 
   public NavigationHelper goTo() {
     return navigationHelper;
+  }
+
+  public DataHelper data() {
+    return dataHelper;
   }
 
 

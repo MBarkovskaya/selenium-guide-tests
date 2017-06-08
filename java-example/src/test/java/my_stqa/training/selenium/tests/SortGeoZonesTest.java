@@ -15,7 +15,7 @@ public class SortGeoZonesTest extends TestBase {
   @Test
   public void sortGeoZones() {
     init();
-    goTo().HomePage();
+    driver.get(getProperty("web.baseUrl") + "/admin/");
     goTo().loginAdmin(properties.getProperty("web.adminLogin"), properties.getProperty("web.adminPassword"));
 
     goTo().GeoZonesPage();
