@@ -3,10 +3,11 @@ package my_stqa.training.selenium.tests;
 import my_stqa.training.selenium.model.Customer;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+
+import java.util.concurrent.TimeUnit;
 
 public class RegistrationNewAccountTest extends TestBase {
 
@@ -31,8 +32,8 @@ public class RegistrationNewAccountTest extends TestBase {
   }
 
   public void loginCreatedAccount(String email, String password) {
-    driver.findElement(By.name("email")).sendKeys(Keys.TAB);
-    driver.findElement(By.name("password")).sendKeys(Keys.TAB);
+    driver.findElement(By.name("email")).sendKeys(email + Keys.TAB);
+    driver.findElement(By.name("password")).sendKeys(password + Keys.TAB);
 
     selenium().click(By.cssSelector("span.button-set button[name=login]"));
   }
@@ -57,8 +58,8 @@ public class RegistrationNewAccountTest extends TestBase {
     select.selectByVisibleText("United States");
     WebElement state = selenium().findElement(By.xpath(".//select[@name='zone_code']"), 5);
     Select selectState = new Select(state);
-    ((JavascriptExecutor) driver).executeScript("arguments[1].click()", state);
-//    selectState.selectByVisibleText("Alaska");
+    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    selectState.selectByVisibleText("Alaska");
     driver.findElement(By.name("email")).sendKeys(email + Keys.TAB);
     driver.findElement(By.name("phone")).sendKeys(Keys.HOME + commondata.getPhone() + Keys.TAB);
     driver.findElement(By.name("password")).sendKeys(password + Keys.TAB);
@@ -71,9 +72,3 @@ public class RegistrationNewAccountTest extends TestBase {
     selenium().click(By.cssSelector("aside#navigation a[href='http://localhost/litecart/en/logout']"));
   }
 }
-
-//  Actions actionObj = new Actions(driver);
-//actionObj.keyDown(Keys.CONTROL)
-//        .sendKeys(Keys.chord("A"))
-//        .keyUp(Keys.CONTROL)
-//        .perform();
