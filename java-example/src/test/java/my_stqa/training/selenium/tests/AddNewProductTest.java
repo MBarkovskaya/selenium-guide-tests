@@ -27,16 +27,14 @@ public class AddNewProductTest extends TestBase {
     wait.until(urlContains("http://localhost/litecart/admin/?category_id=0&app=catalog&doc=edit_product"));
     String Name = "Funny Duck";
     fillGeneralForm(Name);
-    String newName = driver.findElement(By.xpath(".//table[@class='dataTable']//td[a='Funny Duck']")).getAttribute("textContent");
-    if(newName.equals(Name)) {
-      new Actions(driver).click(driver.findElement(By.xpath(".//table[@class='dataTable']//td[a='Funny Duck']")));
-    }
+    editForm(Name);
     fillInformationForm();
-
+    editForm(Name);
 
     selenium().click(By.linkText("Prices"), 10);
-    driver.findElement(By.cssSelector("input[name=purchace_price")).clear();
-    driver.findElement(By.cssSelector("input[name=purchace_price")).sendKeys("22");
+    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    driver.findElement(By.cssSelector("input[name='purchace_price']")).clear();
+    driver.findElement(By.cssSelector("input[name=purchace_price]")).sendKeys("22");
     WebElement elprice = driver.findElement(By.cssSelector("selector[name='purchase_price_currency_code']"));
     Select price = new Select(elprice);
     price.selectByVisibleText("US Dollars");
@@ -46,10 +44,15 @@ public class AddNewProductTest extends TestBase {
     selenium().click(By.cssSelector("button[name=save]"), 5);
   }
 
+  public void editForm(String name) {
+    String newName = driver.findElement(By.xpath(".//table[@class='dataTable']//td[a='Funny Duck']")).getAttribute("textContent");
+    if(newName.trim().equals(name)) {
+      selenium().click(By.xpath(".//a[contains(.,'Funny Duck')]"));
+    }
+  }
+
   public void fillInformationForm() {
     selenium().click(By.cssSelector("ul.index a[href='#tab-information']"));
-    WebDriverWait wait = new WebDriverWait(driver, 5);
-    wait.until(attributeContains(driver.findElement(By.cssSelector("li.active a[href='#tab-information']")),"li", "active"));
     WebElement element = driver.findElement(By.cssSelector("select[name=manufacturer_id]"));
     Select manufacturer = new Select(element);
     manufacturer.selectByVisibleText("ACME Corp.");
