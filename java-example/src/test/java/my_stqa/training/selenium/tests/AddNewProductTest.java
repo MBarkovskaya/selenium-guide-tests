@@ -1,5 +1,6 @@
 package my_stqa.training.selenium.tests;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -8,9 +9,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
 public class AddNewProductTest extends TestBase {
@@ -25,29 +26,41 @@ public class AddNewProductTest extends TestBase {
     wait.until(urlContains("http://localhost/litecart/admin/?app=catalog&doc=catalog"));
     selenium().click(By.linkText("Add New Product"));
     wait.until(urlContains("http://localhost/litecart/admin/?category_id=0&app=catalog&doc=edit_product"));
-    String Name = "Funny Duck";
-    fillGeneralForm(Name);
-    editForm(Name);
+    long now = System.currentTimeMillis();
+    String name = String.format("Funny Duck%s", now);
+    fillGeneralForm(name);
+    editForm(name);
     fillInformationForm();
-    editForm(Name);
+    editForm(name);
+    fillPricesForm();
+    //возвращаемся на траницу Home, чтобы убедиться, что в каталоге появился новый товар
+    goTo().HomePage();
+    goTo().CatalogPage();
+    String newName = driver.findElement(By.xpath(String.format(".//table[@class='dataTable']//td[a='%s']", name))).getAttribute("textContent");
+    Assert.assertTrue(newName.trim().equals(name));
+  }
 
+
+  public void fillPricesForm() {
     selenium().click(By.linkText("Prices"), 10);
     driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-    driver.findElement(By.cssSelector("input[name='purchace_price']")).clear();
-    driver.findElement(By.cssSelector("input[name=purchace_price]")).sendKeys("22");
-    WebElement elprice = driver.findElement(By.cssSelector("selector[name='purchase_price_currency_code']"));
+    driver.findElement(By.xpath(".//div[@id='tab-prices']//table//input[@type='number']")).clear();
+    driver.findElement(By.xpath(".//div[@id='tab-prices']//table//input[@type='number']")).sendKeys("22");
+    WebElement elprice = driver.findElement(By.cssSelector("select[name='purchase_price_currency_code']"));
     Select price = new Select(elprice);
     price.selectByVisibleText("US Dollars");
-    new Actions(driver).click(driver.findElement(By.cssSelector("selector[name='tax_class_id']"))).click();
-    driver.findElement(By.cssSelector("input[name=prices[USD]")).sendKeys("22");
-    driver.findElement(By.cssSelector("input[name=prices[EUR]")).sendKeys("22");
+    new Actions(driver).click(driver.findElement(By.cssSelector("select[name='tax_class_id']"))).click();
+    driver.findElement(By.xpath(".//div[@id='tab-prices']//tr[2]//input[@type='text']")).clear();
+    driver.findElement(By.xpath(".//div[@id='tab-prices']//tr[2]//input[@type='text']")).sendKeys("22");
+    driver.findElement(By.xpath(".//div[@id='tab-prices']//tr[3]//input[@type='text']")).clear();
+    driver.findElement(By.xpath(".//div[@id='tab-prices']//tr[3]//input[@type='text']")).sendKeys("22");
     selenium().click(By.cssSelector("button[name=save]"), 5);
   }
 
   public void editForm(String name) {
-    String newName = driver.findElement(By.xpath(".//table[@class='dataTable']//td[a='Funny Duck']")).getAttribute("textContent");
-    if(newName.trim().equals(name)) {
-      selenium().click(By.xpath(".//a[contains(.,'Funny Duck')]"));
+    String newName = selenium().findElement(By.xpath(String.format(".//table[@class='dataTable']//td[a='%s']", name)), 10).getAttribute("textContent");
+    if (newName.trim().equals(name)) {
+      selenium().click(By.xpath(".//a[contains(.,'Funny Duck')]"), 10);
     }
   }
 
@@ -65,10 +78,10 @@ public class AddNewProductTest extends TestBase {
     selenium().click(By.cssSelector("button[name=save]"), 5);
   }
 
-  public void fillGeneralForm(String Name) {
+  public void fillGeneralForm(String name) {
     selenium().click(By.cssSelector("div#tab-general label"));
     driver.findElement(By.xpath(".//div[@id='tab-general']//tr[2]//span[@class='input-wrapper']/input[@name='name[en]']"))
-            .sendKeys(Name + Keys.TAB);
+            .sendKeys(name + Keys.TAB);
     driver.findElement(By.xpath(".//div[@id='tab-general']//tr[3]//input[@name='code']")).sendKeys(Keys.HOME + "12345" + Keys.TAB);
     selenium().click(By.xpath(".//div[@id='tab-general']//tr[4]//input[@value='1']"));
     new Actions(driver).moveToElement(driver.findElement(By.cssSelector("select[name=default_category_id]"))).click().click().perform();
@@ -84,12 +97,13 @@ public class AddNewProductTest extends TestBase {
     Select select = new Select(el);
     driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
     select.selectByVisibleText("Temporary sold out");
-    //    selenium().click(By.cssSelector("input[name=new_images[]]"));
-    //    File photo = new File(".png”);
-    //    photo.getAbsolutePath());
+    String paint = new File("src/test/resources/images/duck.png").getAbsolutePath();
+    driver.findElement(By.cssSelector("input[type=file]")).sendKeys(paint);
     selenium().click(By.cssSelector("button[name=save]"), 5);
   }
+
 }
+
 
 
 
