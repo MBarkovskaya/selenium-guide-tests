@@ -33,6 +33,7 @@ public class AddNewProductTest extends TestBase {
     fillInformationForm();
     editForm(name);
     fillPricesForm();
+    
     //возвращаемся на траницу Home, чтобы убедиться, что в каталоге появился новый товар
     goTo().HomePage();
     goTo().CatalogPage();

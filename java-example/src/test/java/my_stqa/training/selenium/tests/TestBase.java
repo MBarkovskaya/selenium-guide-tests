@@ -42,7 +42,7 @@ public class TestBase {
   }
 
   public void init() {
-    String browser = System.getProperty("browser", BrowserType.CHROME);
+    String browser = System.getProperty("browser", BrowserType.IE);
     String target = System.getProperty("target", "local");
     try {
       properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
