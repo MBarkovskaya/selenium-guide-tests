@@ -35,6 +35,26 @@ public class SeleniumHelper {
       Assert.fail("Unable to locate element");
     }
   }
+  public void click(By locator, int retriesCnt, long timeout) {
+    WebDriverWait wait = new WebDriverWait(driver, timeout);
+    boolean clicked = false;
+    int retry = 0;
+    while (retry < retriesCnt) {
+      try {
+        WebElement element = wait.until((WebDriver d) -> d.findElement(locator));
+        if (element != null) {
+          element.click();
+          clicked = true;
+          break;
+        } else {
+          ++ retry;
+        }
+      } catch (TimeoutException e) {
+        ++ retry;
+      }
+    }
+    Assert.assertTrue("Element not found", clicked);
+  }
 
   public WebElement findElement(By locator, long timeout) {
     WebDriverWait wait = new WebDriverWait(driver, timeout);
