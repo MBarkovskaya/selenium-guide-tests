@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 public class SeleniumHelper {
 
@@ -43,6 +44,7 @@ public class SeleniumHelper {
       try {
         WebElement element = wait.until((WebDriver d) -> d.findElement(locator));
         if (element != null) {
+          wait.until(visibilityOf(element));
           element.click();
           clicked = true;
           break;
@@ -72,11 +74,15 @@ public class SeleniumHelper {
   }
 
   public boolean isElementPresent(By locator) {
+    return isElementPresent(locator, 10);
+  }
+
+  public boolean isElementPresent(By locator, int timeoutSecs) {
     //если элемент есть, то он найдется, если нет - будет выброшено исключение
     //так как Selenium не может знать есть элемент на странице или нет, поэтому нужно обернуть попытку поиска элементов в блок try
     try {
       //      явное ожидание
-      WebDriverWait wait = new WebDriverWait(driver, 10);
+      WebDriverWait wait = new WebDriverWait(driver, timeoutSecs);
       wait.until(presenceOfElementLocated(locator));
       //      неявное ожидание
       //      driver.findElement(locator);
