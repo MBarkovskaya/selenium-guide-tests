@@ -36,6 +36,7 @@ public class SeleniumHelper {
       Assert.fail("Unable to locate element");
     }
   }
+
   public void click(By locator, int retriesCnt, long timeout) {
     WebDriverWait wait = new WebDriverWait(driver, timeout);
     boolean clicked = false;
