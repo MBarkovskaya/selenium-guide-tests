@@ -51,7 +51,7 @@ public class CountriesOpenedLinkTest extends TestBase {
   public ExpectedCondition<String> anyWindowOtherThan(Set<String> existingWindows) {
     return driver -> {
       Set<String> handles = driver.getWindowHandles();
-      handles.removeAll(existingWindows);
+        handles.removeAll(existingWindows);
       return handles.size() > 0 ? handles.iterator().next() : null;
     };
   }
