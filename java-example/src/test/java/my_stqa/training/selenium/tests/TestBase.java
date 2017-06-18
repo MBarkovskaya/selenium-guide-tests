@@ -42,7 +42,7 @@ public class TestBase {
   }
 
   public void init() {
-    String browser = System.getProperty("browser", BrowserType.C);
+    String browser = System.getProperty("browser", BrowserType.FIREFOX);
     String target = System.getProperty("target", "local");
     try {
       properties.load(new FileReader(new File(String.format("src/test/resources/%s.properties", target))));
