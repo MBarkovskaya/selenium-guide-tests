@@ -20,7 +20,7 @@ public class CountriesOpenedLinkTest extends TestBase {
 
     goTo().CountriesPage();
     //заходим на страницу редактирования Canada
-    selenium().click(By.xpath(".//form[@name='countries_form']//tr[39]//i[@class='fa fa-pencil']"), 5);
+    selenium().click(By.cssSelector("tr.row:not(.header):not(.footer) td:last-child"), 5);
     List<WebElement> linkslist = driver.findElements(By.xpath(".//a[./i[@class='fa fa-external-link']]"));
     for (WebElement link : linkslist) {
       String linktext = link.getAttribute("href");
