@@ -7,11 +7,17 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import ru.stqa.selenium.factory.WebDriverPool;
 
 import java.io.File;
@@ -21,11 +27,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
+import static java.util.logging.Level.ALL;
 import static org.openqa.selenium.remote.BrowserType.*;
 
 public class TestBase {
-  public WebDriver driver;
+  public EventFiringWebDriver driver;
 
   protected final Properties properties;
   private SeleniumHelper seleniumHelper;
@@ -39,6 +47,18 @@ public class TestBase {
   @AfterClass
   public static void stopAllBrowsers() {
     WebDriverPool.DEFAULT.dismissAll();
+  }
+
+  public static class MyListener extends AbstractWebDriverEventListener {
+    @Override
+    public void beforeClickOn(WebElement element, WebDriver driver) {
+      System.out.println(element);
+    }
+
+    @Override
+    public void afterClickOn(WebElement element, WebDriver driver) {
+      driver.manage().logs().get("browser").getAll().stream().filter(l -> l.getLevel() == ALL).forEach(System.out::println);
+    }
   }
 
   public void init() {
@@ -57,7 +77,8 @@ public class TestBase {
           firefoxOptions.setLegacy(true);
           DesiredCapabilities firefoxCaps = DesiredCapabilities.firefox();
           firefoxCaps.setCapability(FirefoxOptions.FIREFOX_OPTIONS, firefoxOptions);
-          driver = WebDriverPool.DEFAULT.getDriver(firefoxCaps);
+          driver = new EventFiringWebDriver(WebDriverPool.DEFAULT.getDriver(firefoxCaps));
+          driver.register(new MyListener());
           break;
         case CHROME:
 
@@ -66,12 +87,17 @@ public class TestBase {
           options.addArguments("start-maximized");
           DesiredCapabilities chromeCapabilities = DesiredCapabilities.chrome();
           chromeCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
-          driver = WebDriverPool.DEFAULT.getDriver(chromeCapabilities);
+          LoggingPreferences logPrefs = new LoggingPreferences();
+          logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
+          chromeCapabilities.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+          driver = new EventFiringWebDriver(WebDriverPool.DEFAULT.getDriver(chromeCapabilities));
+          driver.register(new MyListener());
           break;
         case IE:
           DesiredCapabilities capabilities = new DesiredCapabilities(DesiredCapabilities.internetExplorer());
           capabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
-          driver = WebDriverPool.DEFAULT.getDriver(capabilities);
+          driver = new EventFiringWebDriver(WebDriverPool.DEFAULT.getDriver(capabilities));
+          driver.register(new MyListener());
           break;
       }
     } else {
@@ -79,7 +105,8 @@ public class TestBase {
       capabilities.setBrowserName(browser);
       capabilities.setPlatform(Platform.fromString(System.getProperty("platform", "win8")));
       try {
-        driver = WebDriverPool.DEFAULT.getDriver(new URL(properties.getProperty("selenium.server")), capabilities);
+        driver = new EventFiringWebDriver(WebDriverPool.DEFAULT.getDriver(new URL(properties.getProperty("selenium.server")), capabilities));
+        driver.register(new MyListener());
       } catch (MalformedURLException e) {
         Assert.fail("Unable to read property for selenium.server: " + e);
       }

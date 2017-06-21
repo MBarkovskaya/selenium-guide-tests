@@ -35,6 +35,10 @@ public class NavigationHelper {
     selenium.click(By.xpath(".//li[@id='app-']/a[span='Catalog']"), 5);
   }
 
+  public void RubberDucksPage() {
+    selenium.click(By.xpath(".//tr[@class='row']//a[contains(.,'Rubber Ducks')]"), 5);
+  }
+
   public void GeoZonesPage() {
     if (selenium.isElementPresent(By.tagName("h1")) && selenium.driver.findElement(By.tagName("h1")).getText().equals("Geo Zones")) {
       return;

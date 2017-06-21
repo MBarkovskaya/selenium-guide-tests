@@ -15,3 +15,7 @@ dependencies {
     compile 'ru.stqa.selenium:webdriver-factory:4.0'
 
 }
+
+test {
+    useTestNG()
+}
